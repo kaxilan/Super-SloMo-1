@@ -24,7 +24,7 @@ parser.add_argument("--train_continue", type=bool, default=False, help='If resum
 parser.add_argument("--epochs", type=int, default=200, help='number of epochs to train. Default: 200.')
 parser.add_argument("--train_batch_size", type=int, default=6, help='batch size for training. Default: 6.')
 parser.add_argument("--validation_batch_size", type=int, default=10, help='batch size for validation. Default: 10.')
-parser.add_argument("--init_learning_rate", type=float, default=0.005, help='set initial learning rate. Default: 0.0001.')
+parser.add_argument("--init_learning_rate", type=float, default=0.000005, help='set initial learning rate. Default: 0.0001.')
 parser.add_argument("--milestones", type=list, default=[150], help='Set to epoch values where you want to decrease learning rate by a factor of 0.1. Default: [100, 150]')
 parser.add_argument("--progress_iter", type=int, default=100, help='frequency of reporting progress and validation. N: after every N iterations. Default: 100.')
 parser.add_argument("--checkpoint_epoch", type=int, default=5, help='checkpoint saving frequency. N: after every N epochs. Each checkpoint is roughly of size 151 MB.Default: 5.')
