@@ -80,6 +80,7 @@ def main():
     frameCounter = 1
     # with torch.no_grad():对于不需要反向传播的情景(inference，测试推断)可以实现一定速度的提升
     with torch.no_grad():
+        # frame0, frame1:是连续的两个视频帧
         for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader)):
             I0 = frame0.to(device)
             I1 = frame1.to(device)
