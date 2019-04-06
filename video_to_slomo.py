@@ -66,6 +66,7 @@ def main():
     for param in ArbTimeFlowIntrp.parameters():
         param.requires_grad = False
     
+    # used for backwarping to an image
     flowBackWarp = model.backWarp(videoFrames.dim[0], videoFrames.dim[1], device)
     flowBackWarp = flowBackWarp.to(device)
     
