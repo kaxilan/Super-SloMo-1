@@ -35,6 +35,7 @@ def main():
     outputPath     = os.path.join(extractionDir, "output")
     os.mkdir(extractionPath)
     os.mkdir(outputPath)
+    # 抽取视频帧为图片
     os.system('ffmpeg -i {} -vsync 0 -qscale:v 2 {}/%06d.jpg'.format(args.video, extractionPath))
 
     # Initialize transforms
