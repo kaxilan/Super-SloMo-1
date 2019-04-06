@@ -16,49 +16,16 @@ args = parser.parse_args()
 
 
 def extract_frames(videos, inDir, outDir):
-    """
-    Converts all the videos passed in `videos` list to images.
-    Parameters
-    ----------
-        videos : list
-            name of all video files.
-        inDir : string
-            path to input directory containing videos in `videos` list.
-        outDir : string
-            path to directory to output the extracted images.
-    Returns
-    -------
-        None
-    """
-
-
+    # 抽取视频帧为图片
     for video in videos:
         os.mkdir(os.path.join(outDir, os.path.splitext(video)[0]))
+        # 这里可以使用英伟达的视频编解码方法
         retn = os.system('ffmpeg -i {} -vf scale={}:{} -vsync 0 -qscale:v 2 {}/%04d.jpg'.format(os.path.join(inDir, video), args.img_width, args.img_height, os.path.join(outDir, os.path.splitext(video)[0])))
-        if retn:
-            print("Error converting file:{}. Exiting.".format(video))
-
 
 def create_clips(root, destination):
-    """
-    Distributes the images extracted by `extract_frames()` in
-    clips containing 12 frames each.
-    Parameters
-    ----------
-        root : string
-            path containing extracted image folders.
-        destination : string
-            path to output clips.
-    Returns
-    -------
-        None
-    """
-
-
+    
     folderCounter = -1
-
     files = os.listdir(root)
-
     # Iterate over each folder containing extracted video frames.
     for file in files:
         images = os.listdir(os.path.join(root, file))
