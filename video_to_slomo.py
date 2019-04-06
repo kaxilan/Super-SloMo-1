@@ -35,11 +35,10 @@ def main():
     outputPath     = os.path.join(extractionDir, "output")
     os.mkdir(extractionPath)
     os.mkdir(outputPath)
-    # 抽取视频帧为图片
+    # 抽取一个视频的所有帧为图片
     os.system('ffmpeg -i {} -vsync 0 -qscale:v 2 {}/%06d.jpg'.format(args.video, extractionPath))
-
+    
     # Initialize transforms
-    device = torch.device("cuda:0")
     mean = [0.429, 0.431, 0.397]
     std  = [1, 1, 1]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -52,11 +51,16 @@ def main():
     videoFrames = dataloader.Video(root=extractionPath, transform=transform)
     videoFramesloader = torch.utils.data.DataLoader(videoFrames, batch_size=args.batch_size, shuffle=False)
 
-    # Initialize model
+    # 开启gpu
+    device = torch.device("cuda:0")
+    
+    # Initialize model:流计算CNN
     flowComp = model.UNet(6, 4)
     flowComp.to(device)
     for param in flowComp.parameters():
         param.requires_grad = False
+    
+    # Initialize model:流插值CNN
     ArbTimeFlowIntrp = model.UNet(20, 5)
     ArbTimeFlowIntrp.to(device)
     for param in ArbTimeFlowIntrp.parameters():
@@ -64,6 +68,7 @@ def main():
     
     flowBackWarp = model.backWarp(videoFrames.dim[0], videoFrames.dim[1], device)
     flowBackWarp = flowBackWarp.to(device)
+    
     dict1 = torch.load(args.checkpoint)
     ArbTimeFlowIntrp.load_state_dict(dict1['state_dictAT'])
     flowComp.load_state_dict(dict1['state_dictFC'])
