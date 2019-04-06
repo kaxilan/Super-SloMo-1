@@ -69,7 +69,9 @@ def main():
     flowBackWarp = model.backWarp(videoFrames.dim[0], videoFrames.dim[1], device)
     flowBackWarp = flowBackWarp.to(device)
     
+    # 加载模型
     dict1 = torch.load(args.checkpoint)
+    # 从字典中读取保存的参数
     ArbTimeFlowIntrp.load_state_dict(dict1['state_dictAT'])
     flowComp.load_state_dict(dict1['state_dictFC'])
 
