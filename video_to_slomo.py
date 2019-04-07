@@ -84,6 +84,7 @@ def main():
         for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader)):
             I0 = frame0.to(device)
             I1 = frame1.to(device)
+            # flowComp会自动调用UNet类的forward方法
             flowOut = flowComp(torch.cat((I0, I1), dim=1))
             F_0_1 = flowOut[:,:2,:,:]
             F_1_0 = flowOut[:,2:,:,:]
