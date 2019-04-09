@@ -84,17 +84,17 @@ def main():
         for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader)):
             I0 = frame0.to(device)
             I1 = frame1.to(device)
-            # flowComp会自动调用UNet类的forward方法
+            # flowComp会自动调用UNet类的forward方法提取特征
             flowOut = flowComp(torch.cat((I0, I1), dim=1))
+            # 合成光流：I_0 --> I_1
             F_0_1 = flowOut[:,:2,:,:]
+            # 合成光流：I_1 --> I_0
             F_1_0 = flowOut[:,2:,:,:]
 
             # Save reference frames in output folder
-            try:
-                for batchIndex in range(args.batch_size):
-                    (TP(frame0[batchIndex].detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
-            except:
-                pass
+            for batchIndex in range(args.batch_size):
+                (TP(frame0[batchIndex].detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
+
             frameCounter += 1
             # Generate intermediate frames
             for intermediateIndex in range(1, args.sf):
