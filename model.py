@@ -192,8 +192,6 @@ class UNet(nn.Module):
             tensor
                 output of the UNet.
         """
-
-
         x  = F.leaky_relu(self.conv1(x), negative_slope = 0.1)
         s1 = F.leaky_relu(self.conv2(x), negative_slope = 0.1)
         s2 = self.down1(s1)
