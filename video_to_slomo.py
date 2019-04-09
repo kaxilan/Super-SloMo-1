@@ -84,7 +84,7 @@ def main():
         for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader)):
             I0 = frame0.to(device)
             I1 = frame1.to(device)
-            # flowComp会自动调用UNet类的forward方法提取特征
+            # flowComp对象会自动调用UNet类的forward方法提取特征，这个特征是四个（四通道）特征图，并不是一个向量
             flowOut = flowComp(torch.cat((I0, I1), dim=1))
             # 合成光流：I_0 --> I_1
             F_0_1 = flowOut[:,:2,:,:]
