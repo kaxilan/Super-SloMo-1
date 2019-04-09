@@ -86,13 +86,14 @@ def main():
             I1 = frame1.to(device)
             # flowComp对象会自动调用UNet类的forward方法提取特征，这个特征是四个（四通道）特征图，并不是一个向量
             flowOut = flowComp(torch.cat((I0, I1), dim=1))
-            # 合成光流：I_0 --> I_1
+            # 合成光流：I0 --> I1
             F_0_1 = flowOut[:,:2,:,:]
-            # 合成光流：I_1 --> I_0
+            # 合成光流：I1 --> I0
             F_1_0 = flowOut[:,2:,:,:]
 
             # Save reference frames in output folder
             for batchIndex in range(args.batch_size):
+                # detach()：截断反向传播的梯度流
                 (TP(frame0[batchIndex].detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
 
             frameCounter += 1
@@ -117,11 +118,8 @@ def main():
                 Ft_p = (wCoeff[0] * V_t_0 * g_I0_F_t_0_f + wCoeff[1] * V_t_1 * g_I1_F_t_1_f) / (wCoeff[0] * V_t_0 + wCoeff[1] * V_t_1)
 
                 # Save intermediate frame
-                try:
-                    for batchIndex in range(args.batch_size):
-                        (TP(Ft_p[batchIndex].cpu().detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
-                except:
-                    pass
+                for batchIndex in range(args.batch_size):
+                    (TP(Ft_p[batchIndex].cpu().detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
                 frameCounter += 1
             # Set counter accounting for batching of frames
             frameCounter += args.sf * (args.batch_size - 1)
