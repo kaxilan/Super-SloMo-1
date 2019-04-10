@@ -93,7 +93,6 @@ def main():
 
             # Save reference frames in output folder
             for batchIndex in range(args.batch_size):
-                # detach()：截断反向传播的梯度流
                 (TP(frame0[batchIndex].detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + args.sf * batchIndex) + ".jpg"))
 
             frameCounter += 1
