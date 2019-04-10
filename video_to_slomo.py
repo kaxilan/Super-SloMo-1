@@ -86,9 +86,9 @@ def main():
             I1 = frame1.to(device)
             # flowComp对象会自动调用UNet类的forward方法提取特征，这个特征是四个（四通道）特征图，并不是一个向量
             flowOut = flowComp(torch.cat((I0, I1), dim=1))
-            # 合成光流：I0 --> I1
+            # 光流：F0→1 I0 --> I1
             F_0_1 = flowOut[:,:2,:,:]
-            # 合成光流：I1 --> I0
+            # 光流：F1→0 I1 --> I0
             F_1_0 = flowOut[:,2:,:,:]
 
             # Save reference frames in output folder
@@ -101,7 +101,9 @@ def main():
                 t = intermediateIndex / args.sf
                 temp = -t * (1 - t)
                 fCoeff = [temp, t * t, (1 - t) * (1 - t), temp]
+                # 合成中间光流：Ft→0 ^It --> I0
                 F_t_0 = fCoeff[0] * F_0_1 + fCoeff[1] * F_1_0
+                # 合成中间光流：Ft→1 ^It --> I1
                 F_t_1 = fCoeff[2] * F_0_1 + fCoeff[3] * F_1_0
                 g_I0_F_t_0 = flowBackWarp(I0, F_t_0)
                 g_I1_F_t_1 = flowBackWarp(I1, F_t_1)
