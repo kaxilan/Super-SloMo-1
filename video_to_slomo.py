@@ -102,11 +102,13 @@ def main():
                 t = intermediateIndex / args.sf
                 temp = -t * (1 - t)
                 fCoeff = [temp, t * t, (1 - t) * (1 - t), temp]
-                # 合成中间光流：Ft→0 ^It --> I0
+                # 近似中间光流：^Ft→0
                 F_t_0 = fCoeff[0] * F_0_1 + fCoeff[1] * F_1_0
-                # 合成中间光流：Ft→1 ^It --> I1
+                # 近似中间光流：^Ft→1
                 F_t_1 = fCoeff[2] * F_0_1 + fCoeff[3] * F_1_0
+                # refined中间光流：Ft→0
                 g_I0_F_t_0 = flowBackWarp(I0, F_t_0)
+                # refined中间光流：Ft→1
                 g_I1_F_t_1 = flowBackWarp(I1, F_t_1)
                 
                 intrpOut = ArbTimeFlowIntrp(torch.cat((I0, I1, F_0_1, F_1_0, F_t_1, F_t_0, g_I1_F_t_1, g_I0_F_t_0), dim=1))
