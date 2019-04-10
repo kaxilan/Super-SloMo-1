@@ -98,6 +98,7 @@ def main():
             frameCounter += 1
             # Generate intermediate frames
             for intermediateIndex in range(1, args.sf):
+                # intermediateIndex ∈ [1,2）;t∈（0,1）表示插帧的位置
                 t = intermediateIndex / args.sf
                 temp = -t * (1 - t)
                 fCoeff = [temp, t * t, (1 - t) * (1 - t), temp]
